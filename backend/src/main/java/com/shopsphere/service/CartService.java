@@ -1,61 +1,93 @@
 package com.shopsphere.service;
 
-import com.shopsphere.model.Cart;
-import com.shopsphere.model.Product;
+import com.shopsphere.model.*;
 import com.shopsphere.repository.CartRepository;
 import com.shopsphere.repository.ProductRepository;
+
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import java.util.ArrayList;
 
 @Service
 @RequiredArgsConstructor
+
 public class CartService {
 
     private final CartRepository cartRepository;
+
     private final ProductRepository productRepository;
 
-    public Cart addProductToCart(String userId, String productId, int quantity) {
-        Product product = productRepository.findById(productId).orElseThrow(() -> new RuntimeException("Product not found"));
+    // ADD TO CART
+    public Cart addToCart(
+            String userId,
+            String productId,
+            int quantity
+    ) {
 
-        Cart cart = cartRepository.findByUserId(userId).orElseGet(() -> {
-            Cart c = new Cart();
-            c.setUserId(userId);
-            return c;
-        });
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() ->
+                        new RuntimeException("Product not found"));
 
-        Optional<Cart.CartProduct> existing = cart.getProducts().stream().filter(p -> p.getProductId().equals(productId)).findFirst();
-        if (existing.isPresent()) {
-            existing.get().setQuantity(existing.get().getQuantity() + quantity);
-        } else {
-            cart.getProducts().add(new Cart.CartProduct(productId, quantity));
+        Cart cart = cartRepository.findByUserId(userId)
+                .orElse(new Cart());
+
+        if (cart.getItems() == null) {
+            cart.setItems(new ArrayList<>());
         }
 
-        double total = cart.getProducts().stream().mapToDouble(p -> {
-            Product prod = productRepository.findById(p.getProductId()).orElse(null);
-            if (prod == null) return 0.0;
-            return prod.getPrice() * p.getQuantity();
-        }).sum();
+        CartItem item = new CartItem(
+                product.getId(),
+                product.getName(),
+                product.getPrice(),
+                quantity,
+                product.getImageUrl()
+        );
+
+        cart.getItems().add(item);
+
+        cart.setUserId(userId);
+
+        double total = cart.getItems()
+                .stream()
+                .mapToDouble(i ->
+                        i.getPrice() * i.getQuantity())
+                .sum();
+
         cart.setTotalPrice(total);
 
         return cartRepository.save(cart);
     }
 
-    public Optional<Cart> getCartByUserId(String userId) {
-        return cartRepository.findByUserId(userId);
+    // GET CART
+    public Cart getCart(String userId) {
+
+        return cartRepository.findByUserId(userId)
+                .orElseThrow(() ->
+                        new RuntimeException("Cart not found"));
     }
 
-    public void removeProductFromCart(String userId, String productId) {
-        cartRepository.findByUserId(userId).ifPresent(cart -> {
-            cart.getProducts().removeIf(p -> p.getProductId().equals(productId));
-            double total = cart.getProducts().stream().mapToDouble(p -> {
-                Product prod = productRepository.findById(p.getProductId()).orElse(null);
-                if (prod == null) return 0.0;
-                return prod.getPrice() * p.getQuantity();
-            }).sum();
-            cart.setTotalPrice(total);
-            cartRepository.save(cart);
-        });
+    // REMOVE ITEM
+    public Cart removeFromCart(
+            String userId,
+            String productId
+    ) {
+
+        Cart cart = getCart(userId);
+
+        cart.getItems().removeIf(
+                item -> item.getProductId().equals(productId)
+        );
+
+        double total = cart.getItems()
+                .stream()
+                .mapToDouble(i ->
+                        i.getPrice() * i.getQuantity())
+                .sum();
+
+        cart.setTotalPrice(total);
+
+        return cartRepository.save(cart);
     }
 }

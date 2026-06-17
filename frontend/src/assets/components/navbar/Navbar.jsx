@@ -45,10 +45,7 @@ function Navbar() {
 
           {/* Right Side Actions */}
           <div className="flex items-center gap-4">
-            {/* Search Icon */}
-            <button className="hidden text-2xl text-gray-700 transition hover:text-black md:inline-block">
-              🔍
-            </button>
+            
 
             {/* Cart Icon */}
             <Link

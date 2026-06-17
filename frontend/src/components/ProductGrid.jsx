@@ -1,6 +1,6 @@
 import ProductCard from "./ProductCard";
-import { FaLaptop, FaMouse, FaHeadphones, FaGamepad, FaKeyboard, FaMonitor } from "react-icons/fa";
-
+import { FaLaptop, FaMouse, FaHeadphones, FaGamepad, FaKeyboard } from "react-icons/fa";
+import { FaDesktop } from "react-icons/fa";
 function ProductGrid({ title }) {
   const products = [
     {
@@ -45,7 +45,7 @@ function ProductGrid({ title }) {
       rating: 4.6,
       reviews: 87,
       discount: 36,
-      icon: <FaMonitor />,
+      icon: <FaDesktop />,
     },
     {
       id: 5,

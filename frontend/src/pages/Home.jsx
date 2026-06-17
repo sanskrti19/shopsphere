@@ -13,7 +13,7 @@ function Home() {
       <Navbar />
 
       {/* Hero Section */}
-      <Hero />
+      {/* <Hero /> */}
 
       {/* Search Bar */}
       <SearchBar />

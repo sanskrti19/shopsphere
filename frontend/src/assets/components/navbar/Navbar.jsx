@@ -1,50 +1,145 @@
-﻿import { Link } from "react-router-dom";
+﻿import { useState } from "react";
+import { Link } from "react-router-dom";
+import { FaShoppingCart, FaUser, FaBars, FaTimes } from "react-icons/fa";
 import { useAuth } from "../../../context/AuthContext";
 
 function Navbar() {
   const { isAuthenticated, logout } = useAuth();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [cartCount, setCartCount] = useState(2); // Dummy cart count
 
   return (
-    <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-6 lg:px-8">
-      <Link to="/" className="text-2xl font-bold tracking-tight text-slate-900">
-        ShopSphere
-      </Link>
+    <nav className="sticky top-0 z-50 bg-white shadow-md">
+      <div className="mx-auto max-w-7xl px-6">
+        <div className="flex items-center justify-between py-4">
+          {/* Logo */}
+          <Link to="/" className="text-2xl font-bold tracking-tight text-black">
+            ShopSphere
+          </Link>
 
-      <div className="flex items-center gap-4 text-sm font-medium text-slate-600">
-        <Link to="/" className="hover:text-slate-900 transition">
-          Home
-        </Link>
-        <Link to="/products" className="hover:text-slate-900 transition">
-          Products
-        </Link>
-        {isAuthenticated ? (
-          <>
-            <Link to="/cart" className="hover:text-slate-900 transition">
-              Cart
+          {/* Desktop Menu */}
+          <div className="hidden items-center gap-8 lg:flex">
+            <Link to="/" className="font-medium text-gray-700 transition hover:text-black">
+              Home
             </Link>
-            <Link to="/orders" className="hover:text-slate-900 transition">
-              Orders
+            <Link to="/products" className="font-medium text-gray-700 transition hover:text-black">
+              Products
             </Link>
-            <button
-              type="button"
-              onClick={logout}
-              className="rounded-full border border-slate-300 bg-white px-4 py-2 text-slate-900 transition hover:bg-slate-100"
-            >
-              Logout
+            {isAuthenticated && (
+              <Link to="/orders" className="font-medium text-gray-700 transition hover:text-black">
+                Orders
+              </Link>
+            )}
+          </div>
+
+          {/* Right Side Actions */}
+          <div className="flex items-center gap-4">
+            {/* Search Icon */}
+            <button className="hidden text-2xl text-gray-700 transition hover:text-black md:inline-block">
+              🔍
             </button>
-          </>
-        ) : (
-          <>
-            <Link to="/login" className="hover:text-slate-900 transition">
-              Login
-            </Link>
+
+            {/* Cart Icon */}
             <Link
-              to="/register"
-              className="rounded-full border border-slate-300 bg-white px-4 py-2 text-slate-900 transition hover:bg-slate-100"
+              to="/cart"
+              className="relative text-2xl text-gray-700 transition hover:text-black"
             >
-              Register
+              <FaShoppingCart />
+              {isAuthenticated && cartCount > 0 && (
+                <span className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs font-bold text-white">
+                  {cartCount}
+                </span>
+              )}
             </Link>
-          </>
+
+            {/* Auth Actions */}
+            <div className="hidden items-center gap-4 lg:flex">
+              {isAuthenticated ? (
+                <>
+                  <button className="flex items-center gap-2 text-gray-700 transition hover:text-black">
+                    <FaUser />
+                    <span className="font-medium">Profile</span>
+                  </button>
+                  <button
+                    onClick={logout}
+                    className="rounded-full border border-gray-300 bg-white px-4 py-2 font-medium text-black transition hover:bg-gray-100"
+                  >
+                    Logout
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link
+                    to="/login"
+                    className="font-medium text-gray-700 transition hover:text-black"
+                  >
+                    Login
+                  </Link>
+                  <Link
+                    to="/register"
+                    className="rounded-full bg-black px-4 py-2 font-medium text-white transition hover:bg-gray-800"
+                  >
+                    Register
+                  </Link>
+                </>
+              )}
+            </div>
+
+            {/* Mobile Menu Button */}
+            <button
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className="text-2xl text-gray-700 transition hover:text-black lg:hidden"
+            >
+              {isMenuOpen ? <FaTimes /> : <FaBars />}
+            </button>
+          </div>
+        </div>
+
+        {/* Mobile Menu */}
+        {isMenuOpen && (
+          <div className="border-t border-gray-200 pb-4 lg:hidden">
+            <Link to="/" className="block px-4 py-2 font-medium text-gray-700 transition hover:text-black">
+              Home
+            </Link>
+            <Link to="/products" className="block px-4 py-2 font-medium text-gray-700 transition hover:text-black">
+              Products
+            </Link>
+            {isAuthenticated && (
+              <Link to="/orders" className="block px-4 py-2 font-medium text-gray-700 transition hover:text-black">
+                Orders
+              </Link>
+            )}
+            <div className="border-t border-gray-200 px-4 py-4">
+              {isAuthenticated ? (
+                <>
+                  <button className="block w-full text-left font-medium text-gray-700 transition hover:text-black">
+                    Profile
+                  </button>
+                  <button
+                    onClick={logout}
+                    className="mt-3 w-full rounded-full border border-gray-300 bg-white px-4 py-2 font-medium text-black transition hover:bg-gray-100"
+                  >
+                    Logout
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link
+                    to="/login"
+                    className="block font-medium text-gray-700 transition hover:text-black"
+                  >
+                    Login
+                  </Link>
+                  <Link
+                    to="/register"
+                    className="mt-3 block w-full rounded-full bg-black py-2 text-center font-medium text-white transition hover:bg-gray-800"
+                  >
+                    Register
+                  </Link>
+                </>
+              )}
+            </div>
+          </div>
         )}
       </div>
     </nav>

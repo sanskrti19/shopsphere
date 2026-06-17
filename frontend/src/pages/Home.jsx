@@ -37,9 +37,3 @@ function Home() {
 }
 
 export default Home;
-      </main>
-    </div>
-  );
-}
-
-export default Home;

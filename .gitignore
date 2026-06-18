@@ -23,6 +23,7 @@ build/
 .vscode/
 *.iml
 .idea/
+target/
 
 # Frontend - Node.js & Vite
 node_modules/

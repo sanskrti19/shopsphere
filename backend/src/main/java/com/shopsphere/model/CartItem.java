@@ -6,12 +6,12 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-
+@Builder
 public class CartItem {
 
     private String productId;
 
-    private String productName;
+    private String name;
 
     private double price;
 

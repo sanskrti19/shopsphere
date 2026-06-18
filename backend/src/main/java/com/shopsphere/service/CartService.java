@@ -33,8 +33,8 @@ public class CartService {
         Cart cart = cartRepository.findByUserId(userId)
                 .orElse(new Cart());
 
-        if (cart.getItems() == null) {
-            cart.setItems(new ArrayList<>());
+        if (cart.getProducts() == null) {
+            cart.setProducts(new ArrayList<>());
         }
 
         CartItem item = new CartItem(
@@ -45,11 +45,11 @@ public class CartService {
                 product.getImageUrl()
         );
 
-        cart.getItems().add(item);
+        cart.getProducts().add(item);
 
         cart.setUserId(userId);
 
-        double total = cart.getItems()
+        double total = cart.getProducts()
                 .stream()
                 .mapToDouble(i ->
                         i.getPrice() * i.getQuantity())
@@ -76,11 +76,11 @@ public class CartService {
 
         Cart cart = getCart(userId);
 
-        cart.getItems().removeIf(
+        cart.getProducts().removeIf(
                 item -> item.getProductId().equals(productId)
         );
 
-        double total = cart.getItems()
+        double total = cart.getProducts()
                 .stream()
                 .mapToDouble(i ->
                         i.getPrice() * i.getQuantity())

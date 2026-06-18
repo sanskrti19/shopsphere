@@ -18,8 +18,7 @@ import org.springframework.web.bind.annotation.*;
 public class CartController {
 
     private final CartService cartService;
-
-    // ADD TO CART
+ 
     @PostMapping("/add")
     public ResponseEntity<Cart> addToCart(
 
@@ -49,8 +48,7 @@ public class CartController {
                 cartService.getCart(userId)
         );
     }
-
-    // REMOVE ITEM
+ 
     @DeleteMapping("/remove")
     public ResponseEntity<Cart> removeFromCart(
 

@@ -21,16 +21,7 @@ public class Cart {
     private String userId;
 
     @Builder.Default
-    private List<CartProduct> products = new ArrayList<>();
+    private List<CartItem> products = new ArrayList<>();
 
     private double totalPrice;
-
-    @Getter
-    @Setter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class CartProduct {
-        private String productId;
-        private int quantity;
-    }
 }
